@@ -4,228 +4,69 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prize Explorer — The Grass Tourney 2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #ffffff;
-    --bg2: #f5f4f0;
-    --bg3: #eeecea;
-    --text: #1a1a18;
-    --text2: #5f5e5a;
-    --text3: #888780;
-    --border: rgba(0,0,0,0.12);
-    --border2: rgba(0,0,0,0.22);
-    --radius: 8px;
-    --radius-lg: 12px;
+    --bg: #ffffff; --bg2: #f5f4f0; --bg3: #eeecea;
+    --text: #1a1a18; --text2: #5f5e5a; --text3: #888780;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --radius: 8px; --radius-lg: 12px;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1e1e1c;
-      --bg2: #2a2a28;
-      --bg3: #323230;
-      --text: #f0ede8;
-      --text2: #a8a69f;
-      --text3: #6e6c67;
-      --border: rgba(255,255,255,0.10);
-      --border2: rgba(255,255,255,0.18);
+      --bg: #1e1e1c; --bg2: #2a2a28; --bg3: #323230;
+      --text: #f0ede8; --text2: #a8a69f; --text3: #6e6c67;
+      --border: rgba(255,255,255,0.10); --border2: rgba(255,255,255,0.18);
     }
   }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg3);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 1rem;
-  }
-  .card {
-    max-width: 680px;
-    margin: 0 auto;
-    background: var(--bg);
-    border-radius: 16px;
-    border: 0.5px solid var(--border);
-    overflow: hidden;
-  }
-  .header {
-    background: #1a3a2a;
-    padding: 1.5rem 1.5rem 1.25rem;
-    text-align: center;
-  }
-  .header-eyebrow {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: #5DCAA5;
-    margin-bottom: .35rem;
-  }
-  .header-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #ffffff;
-    margin-bottom: .25rem;
-  }
-  .header-sub {
-    font-size: 13px;
-    color: #9FE1CB;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; padding: 1rem; }
+  .card { max-width: 680px; margin: 0 auto; background: var(--bg); border-radius: 16px; border: 0.5px solid var(--border); overflow: hidden; }
+  .header { background: #1a3a2a; padding: 1.5rem 1.5rem 1.25rem; text-align: center; }
+  .header-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #5DCAA5; margin-bottom: .35rem; }
+  .header-title { font-size: 24px; font-weight: 600; color: #ffffff; margin-bottom: .25rem; }
+  .header-sub { font-size: 13px; color: #9FE1CB; }
+  .pool-banner { background: #EF9F27; padding: .6rem 1.5rem; text-align: center; }
+  .pool-banner-text { font-size: 13px; font-weight: 700; color: #1a3a2a; }
+  .pool-banner-text a { color: #1a3a2a; }
   .body { padding: 1.25rem 1.25rem 1.5rem; }
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 1.5rem;
-    align-items: flex-end;
-  }
+  .controls { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.5rem; align-items: flex-end; }
   .ctrl-group { display: flex; flex-direction: column; gap: 5px; min-width: 180px; flex: 1; }
   .ctrl-group label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; }
-  select {
-    padding: 9px 12px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border2);
-    background: var(--bg2);
-    color: var(--text);
-    font-size: 14px;
-    font-family: inherit;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding-right: 30px;
-  }
+  select { padding: 9px 12px; border-radius: var(--radius); border: 1px solid var(--border2); background: var(--bg2); color: var(--text); font-size: 14px; font-family: inherit; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
   .slider-group { display: flex; flex-direction: column; gap: 5px; flex: 2; min-width: 200px; }
   .slider-group label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; }
   .slider-row { display: flex; align-items: center; gap: 10px; }
   input[type=range] { flex: 1; height: 4px; accent-color: #1D9E75; cursor: pointer; }
-  .team-badge {
-    background: #FAEEDA;
-    color: #412402;
-    border: 1px solid #FAC775;
-    border-radius: var(--radius);
-    font-size: 15px;
-    font-weight: 700;
-    padding: 4px 12px;
-    min-width: 52px;
-    text-align: center;
-  }
-  .podium-wrap {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 10px;
-    height: 190px;
-    margin-bottom: 1rem;
-  }
-  .podium-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    flex: 1;
-    max-width: 150px;
-  }
+  .team-badge { background: #FAEEDA; color: #412402; border: 1px solid #FAC775; border-radius: var(--radius); font-size: 15px; font-weight: 700; padding: 4px 12px; min-width: 52px; text-align: center; }
+  .podium-wrap { display: flex; align-items: flex-end; justify-content: center; gap: 10px; height: 190px; margin-bottom: 1rem; }
+  .podium-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; max-width: 150px; }
   .podium-amount { font-size: 18px; font-weight: 700; margin-bottom: 3px; }
   .podium-place-label { font-size: 12px; color: var(--text2); margin-bottom: 5px; }
-  .podium-block {
-    width: 100%;
-    border-radius: 6px 6px 0 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .podium-block { width: 100%; border-radius: 6px 6px 0 0; display: flex; align-items: center; justify-content: center; }
   .podium-rank { font-size: 13px; font-weight: 600; }
-  .col-1st .podium-block  { background: #FAC775; border: 1px solid #EF9F27; }
-  .col-1st .podium-amount { color: #412402; }
-  .col-1st .podium-rank   { color: #633806; }
-  .col-2nd .podium-block  { background: #D3D1C7; border: 1px solid #B4B2A9; }
-  .col-2nd .podium-amount { color: #2C2C2A; }
-  .col-2nd .podium-rank   { color: #444441; }
-  .col-3rd .podium-block  { background: #F5C4B3; border: 1px solid #F0997B; }
-  .col-3rd .podium-amount { color: #4A1B0C; }
-  .col-3rd .podium-rank   { color: #711B13; }
-  .col-empty .podium-block  { background: var(--bg2); border: 1px solid var(--border); }
-  .col-empty .podium-amount { color: var(--text3); }
-  .col-empty .podium-rank   { color: var(--text3); }
-  .entry-msg {
-    text-align: center;
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.65;
-    margin-bottom: 1.5rem;
-    padding: 0 .5rem;
-  }
+  .col-1st .podium-block { background: #FAC775; border: 1px solid #EF9F27; } .col-1st .podium-amount { color: #412402; } .col-1st .podium-rank { color: #633806; }
+  .col-2nd .podium-block { background: #D3D1C7; border: 1px solid #B4B2A9; } .col-2nd .podium-amount { color: #2C2C2A; } .col-2nd .podium-rank { color: #444441; }
+  .col-3rd .podium-block { background: #F5C4B3; border: 1px solid #F0997B; } .col-3rd .podium-amount { color: #4A1B0C; } .col-3rd .podium-rank { color: #711B13; }
+  .col-empty .podium-block { background: var(--bg2); border: 1px solid var(--border); } .col-empty .podium-amount { color: var(--text3); } .col-empty .podium-rank { color: var(--text3); }
+  .entry-msg { text-align: center; font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 1.5rem; padding: 0 .5rem; }
   .entry-msg strong { color: var(--text); font-weight: 600; }
-  .chart-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    text-align: center;
-    margin-bottom: .6rem;
-  }
+  .chart-label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; text-align: center; margin-bottom: .6rem; }
   .chart-wrap { position: relative; width: 100%; height: 190px; margin-bottom: 1.5rem; }
-  .legend {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-    font-size: 12px;
-    color: var(--text2);
-    margin-bottom: 1.25rem;
-  }
+  .legend { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; font-size: 12px; color: var(--text2); margin-bottom: 1.25rem; }
   .legend span { display: flex; align-items: center; gap: 5px; }
   .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-  .snapshot-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    text-align: center;
-    margin-bottom: .6rem;
-  }
-  .tier-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 7px;
-    margin-bottom: 1.25rem;
-  }
-  .tier-card {
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--bg);
-    padding: .55rem .6rem;
-    text-align: center;
-  }
+  .snapshot-label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; text-align: center; margin-bottom: .6rem; }
+  .tier-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 7px; margin-bottom: 1.25rem; }
+  .tier-card { border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); padding: .55rem .6rem; text-align: center; }
   .tier-card.active { border-color: #EF9F27; background: #FAEEDA; }
-  .tc-teams  { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
-  .tier-card.active .tc-teams  { color: #854F0B; }
-  .tc-amt    { font-size: 14px; font-weight: 700; color: var(--text); }
-  .tier-card.active .tc-amt    { color: #412402; }
-  .tc-places { font-size: 10px; color: var(--text3); margin-top: 1px; }
-  .tier-card.active .tc-places { color: #854F0B; }
-  .nudge {
-    background: #EAF3DE;
-    border: 1px solid #C0DD97;
-    border-radius: var(--radius-lg);
-    padding: .85rem 1rem;
-    text-align: center;
-    font-size: 13px;
-    color: #27500A;
-    line-height: 1.65;
-    margin-bottom: 1rem;
-  }
+  .tc-teams { font-size: 11px; color: var(--text3); margin-bottom: 2px; } .tier-card.active .tc-teams { color: #854F0B; }
+  .tc-amt { font-size: 14px; font-weight: 700; color: var(--text); } .tier-card.active .tc-amt { color: #412402; }
+  .tc-places { font-size: 10px; color: var(--text3); margin-top: 1px; } .tier-card.active .tc-places { color: #854F0B; }
+  .nudge { background: #EAF3DE; border: 1px solid #C0DD97; border-radius: var(--radius-lg); padding: .85rem 1rem; text-align: center; font-size: 13px; color: #27500A; line-height: 1.65; margin-bottom: 1rem; }
   .nudge strong { font-weight: 600; }
-  .disclaimer {
-    font-size: 11px;
-    color: var(--text3);
-    text-align: center;
-    line-height: 1.6;
-    border-top: 1px solid var(--border);
-    padding-top: .85rem;
-    margin-top: .25rem;
-  }
+  .disclaimer { font-size: 11px; color: var(--text3); text-align: center; line-height: 1.7; border-top: 1px solid var(--border); padding-top: .85rem; margin-top: .25rem; }
+  .disclaimer sup { font-size: 9px; }
 </style>
 </head>
 <body>
@@ -234,6 +75,9 @@
     <div class="header-eyebrow">The Grass Tourney 2</div>
     <div class="header-title">What could you win?</div>
     <div class="header-sub">Pick your division · see how prizes grow as more teams sign up</div>
+  </div>
+  <div class="pool-banner">
+    <div class="pool-banner-text">Over $10,000 in prizes if divisions fill up* &nbsp;·&nbsp; Register: <a href="https://volleyballlife.com/event/33733">volleyballlife.com/event/33733</a></div>
   </div>
   <div class="body">
     <div class="controls">
@@ -259,7 +103,6 @@
 
     <div class="podium-wrap" id="podium"></div>
     <div class="entry-msg" id="entry-msg"></div>
-
     <div class="chart-label">1st place prize as teams grow</div>
     <div class="legend">
       <span><span class="legend-dot" style="background:#EF9F27"></span>1st place</span>
@@ -267,15 +110,16 @@
       <span><span class="legend-dot" style="background:#F0997B"></span>3rd place</span>
     </div>
     <div class="chart-wrap"><canvas id="prizeChart"></canvas></div>
-
     <div class="snapshot-label">Prize snapshots</div>
     <div class="tier-grid" id="tier-grid"></div>
     <div class="nudge" id="nudge"></div>
-    <div class="disclaimer">Final payouts based on actual registration at close of registration. Minimum 4 teams required per division.</div>
+    <div class="disclaimer">
+      Final payouts based on actual registration at close of registration. Minimum 4 teams required per division.<br>
+      <sup>*</sup> Total prize pool of $10,000+ is only achievable if all adult divisions reach maximum capacity (32 teams each). Prize amounts scale with the number of registered teams — the more teams that sign up, the bigger the prizes get.
+    </div>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 (function () {
   var DIVS = {
@@ -286,74 +130,54 @@
     cc4: { name: "Coed 4v4 Competitive",         pp: 4, eb: 160, gen: 200 },
     cs4: { name: "Coed 4v4 Semi-Competitive",    pp: 4, eb: 120, gen: 140 }
   };
-
   var SHIRT = 8.5, FIELD_FEE = 2;
   var milestones = [4, 6, 8, 10, 12, 16, 20, 24, 28, 32];
   var chartInst = null;
   var currentN = 12;
 
   function r5(n) { return Math.round(n / 5) * 5; }
-
   function calcNet(d, n) {
     var eb = Math.round(n * 0.7), gen = n - eb;
     return (eb * d.eb + gen * d.gen) - (n * d.pp * (SHIRT + FIELD_FEE));
   }
-
   function getPrizes(d, n) {
     if (n < 4) return null;
-    var net = calcNet(d, n), eb = d.eb, p1;
-    if (n <= 7)  { p1 = Math.max(r5(eb),        r5(net * 0.30)); return { places: 1, p1: p1, p2: 0,             p3: 0 }; }
-    if (n <= 11) { p1 = Math.max(r5(eb * 1.05), r5(net * 0.26)); return { places: 2, p1: p1, p2: r5(p1 * 0.55), p3: 0 }; }
-    if (n <= 15) { p1 = Math.max(r5(eb * 1.2),  r5(net * 0.24)); return { places: 3, p1: p1, p2: r5(p1 * 0.55), p3: r5(p1 * 0.28) }; }
-    if (n <= 19) { p1 = Math.max(r5(eb * 1.4),  r5(net * 0.23)); return { places: 3, p1: p1, p2: r5(p1 * 0.55), p3: r5(p1 * 0.30) }; }
-    if (n <= 23) { p1 = Math.max(r5(eb * 1.6),  r5(net * 0.23)); return { places: 3, p1: p1, p2: r5(p1 * 0.55), p3: r5(p1 * 0.32) }; }
-    if (n <= 27) { p1 = Math.max(r5(eb * 1.8),  r5(net * 0.23)); return { places: 3, p1: p1, p2: r5(p1 * 0.55), p3: r5(p1 * 0.33) }; }
-    p1 = Math.max(r5(eb * 2.0), r5(net * 0.22)); return { places: 3, p1: p1, p2: r5(p1 * 0.55), p3: r5(p1 * 0.35) };
+    var net = calcNet(d, n), eb = d.eb, p1, p2, p3;
+    if (n <= 7)  { p1 = Math.max(r5(eb),        r5(net * 0.42)); return { places: 1, p1: p1, p2: 0, p3: 0 }; }
+    if (n <= 11) { p1 = Math.max(r5(eb * 1.1),  r5(net * 0.38)); p2 = r5(p1 * 0.55); return { places: 2, p1: p1, p2: p2, p3: 0 }; }
+    if (n <= 15) { p1 = Math.max(r5(eb * 1.3),  r5(net * 0.36)); p2 = r5(p1 * 0.55); p3 = r5(p1 * 0.30); return { places: 3, p1: p1, p2: p2, p3: p3 }; }
+    if (n <= 19) { p1 = Math.max(r5(eb * 1.6),  r5(net * 0.35)); p2 = r5(p1 * 0.55); p3 = r5(p1 * 0.32); return { places: 3, p1: p1, p2: p2, p3: p3 }; }
+    if (n <= 23) { p1 = Math.max(r5(eb * 1.9),  r5(net * 0.34)); p2 = r5(p1 * 0.55); p3 = r5(p1 * 0.33); return { places: 3, p1: p1, p2: p2, p3: p3 }; }
+    if (n <= 27) { p1 = Math.max(r5(eb * 2.2),  r5(net * 0.34)); p2 = r5(p1 * 0.55); p3 = r5(p1 * 0.35); return { places: 3, p1: p1, p2: p2, p3: p3 }; }
+    p1 = Math.max(r5(eb * 2.5), r5(net * 0.33)); p2 = r5(p1 * 0.55); p3 = r5(p1 * 0.36);
+    return { places: 3, p1: p1, p2: p2, p3: p3 };
   }
-
   function fmt(n) { return n > 0 ? '$' + n.toLocaleString() : '—'; }
-
   function blockH(v, max, hi, lo) { return v > 0 ? Math.max(lo, Math.round((v / max) * hi)) : 22; }
-
-  function closest(n) {
-    return milestones.reduce(function (p, c) { return Math.abs(c - n) < Math.abs(p - n) ? c : p; });
-  }
+  function closest(n) { return milestones.reduce(function (p, c) { return Math.abs(c - n) < Math.abs(p - n) ? c : p; }); }
 
   function render() {
     var d = DIVS[document.getElementById('div-select').value];
     var n = currentN;
     var pr = getPrizes(d, n);
     var maxP1 = Math.max.apply(null, milestones.map(function (m) { var p = getPrizes(d, m); return p ? p.p1 : 0; }));
+    var p1h = pr ? pr.p1 : 0, p2h = pr ? pr.p2 : 0, p3h = pr ? pr.p3 : 0;
 
-    var p1h = pr ? pr.p1 : 0;
-    var p2h = pr ? pr.p2 : 0;
-    var p3h = pr ? pr.p3 : 0;
-
-    /* --- podium --- */
     document.getElementById('podium').innerHTML =
       '<div class="podium-col col-2nd ' + (p2h === 0 ? 'col-empty' : '') + '">' +
-        '<div class="podium-amount">' + fmt(p2h) + '</div>' +
-        '<div class="podium-place-label">2nd place</div>' +
-        '<div class="podium-block" style="height:' + blockH(p2h, maxP1, 140, 22) + 'px"><span class="podium-rank">2nd</span></div>' +
-      '</div>' +
+        '<div class="podium-amount">' + fmt(p2h) + '</div><div class="podium-place-label">2nd place</div>' +
+        '<div class="podium-block" style="height:' + blockH(p2h, maxP1, 140, 22) + 'px"><span class="podium-rank">2nd</span></div></div>' +
       '<div class="podium-col col-1st">' +
-        '<div class="podium-amount">' + fmt(p1h) + '</div>' +
-        '<div class="podium-place-label">1st place</div>' +
-        '<div class="podium-block" style="height:' + blockH(p1h, maxP1, 165, 32) + 'px"><span class="podium-rank">1st</span></div>' +
-      '</div>' +
+        '<div class="podium-amount">' + fmt(p1h) + '</div><div class="podium-place-label">1st place</div>' +
+        '<div class="podium-block" style="height:' + blockH(p1h, maxP1, 165, 32) + 'px"><span class="podium-rank">1st</span></div></div>' +
       '<div class="podium-col col-3rd ' + (p3h === 0 ? 'col-empty' : '') + '">' +
-        '<div class="podium-amount">' + fmt(p3h) + '</div>' +
-        '<div class="podium-place-label">3rd place</div>' +
-        '<div class="podium-block" style="height:' + blockH(p3h, maxP1, 105, 22) + 'px"><span class="podium-rank">3rd</span></div>' +
-      '</div>';
+        '<div class="podium-amount">' + fmt(p3h) + '</div><div class="podium-place-label">3rd place</div>' +
+        '<div class="podium-block" style="height:' + blockH(p3h, maxP1, 105, 22) + 'px"><span class="podium-rank">3rd</span></div></div>';
 
-    /* --- entry message --- */
     var msg;
-    if (!pr) {
-      msg = 'Add more teams to unlock prizes.';
-    } else if (pr.p1 >= d.eb) {
-      msg = '<strong>1st place wins ' + fmt(pr.p1) + '</strong> — your entry fee back' +
-            (pr.p1 > d.eb ? ' and then some' : '') + '. ' +
+    if (!pr) { msg = 'Add more teams to unlock prizes.'; }
+    else if (pr.p1 >= d.eb) {
+      msg = '<strong>1st place wins ' + fmt(pr.p1) + '</strong> — your entry fee back' + (pr.p1 > d.eb ? ' and then some' : '') + '. ' +
             (pr.places >= 2 ? '2nd place earns ' + fmt(pr.p2) + '. ' : '') +
             (pr.places >= 3 ? '3rd place earns ' + fmt(pr.p3) + '.' : '');
     } else {
@@ -361,32 +185,25 @@
     }
     document.getElementById('entry-msg').innerHTML = msg;
 
-    /* --- snapshot cards --- */
     var cl = closest(n);
     document.getElementById('tier-grid').innerHTML = milestones.map(function (m) {
       var mp = getPrizes(d, m);
       return '<div class="tier-card ' + (m === cl ? 'active' : '') + '">' +
         '<div class="tc-teams">' + m + ' teams</div>' +
-        '<div class="tc-amt">'   + (mp ? fmt(mp.p1) : '—') + '</div>' +
-        '<div class="tc-places">' + (mp ? 'top ' + mp.places : 'no div.') + '</div>' +
-      '</div>';
+        '<div class="tc-amt">' + (mp ? fmt(mp.p1) : '—') + '</div>' +
+        '<div class="tc-places">' + (mp ? 'top ' + mp.places : 'no div.') + '</div></div>';
     }).join('');
 
-    /* --- nudge --- */
     var nextMs = [8, 12, 16, 20, 24, 28, 32].filter(function (m) { return m > n; })[0];
     var nextPr = nextMs ? getPrizes(d, nextMs) : null;
     var nudgeEl = document.getElementById('nudge');
     if (nextPr && pr) {
       nudgeEl.style.display = 'block';
-      nudgeEl.innerHTML = 'If <strong>' + nextMs + ' teams</strong> sign up, 1st place jumps to <strong>' +
-        fmt(nextPr.p1) + '</strong>' +
+      nudgeEl.innerHTML = 'If <strong>' + nextMs + ' teams</strong> sign up, 1st place jumps to <strong>' + fmt(nextPr.p1) + '</strong>' +
         (nextPr.places > pr.places ? ' and a new prize place unlocks' : '') +
         ' — share this with your crew, every team grows the pot.';
-    } else {
-      nudgeEl.style.display = 'none';
-    }
+    } else { nudgeEl.style.display = 'none'; }
 
-    /* --- chart --- */
     var p1d = milestones.map(function (m) { var p = getPrizes(d, m); return p ? p.p1 : 0; });
     var p2d = milestones.map(function (m) { var p = getPrizes(d, m); return p ? p.p2 : 0; });
     var p3d = milestones.map(function (m) { var p = getPrizes(d, m); return p ? p.p3 : 0; });
@@ -400,45 +217,33 @@
       data: {
         labels: milestones.map(function (m) { return m + ' teams'; }),
         datasets: [
-          { label: '1st', data: p1d, borderColor: '#EF9F27', backgroundColor: 'rgba(250,199,117,0.18)',
-            fill: true, tension: 0.35, pointRadius: ptRadius, pointBackgroundColor: ptBg, borderWidth: 2 },
-          { label: '2nd', data: p2d, borderColor: '#B4B2A9', fill: false,
-            tension: 0.35, pointRadius: 3, borderDash: [5, 3], borderWidth: 1.5 },
-          { label: '3rd', data: p3d, borderColor: '#F0997B', fill: false,
-            tension: 0.35, pointRadius: 3, borderDash: [2, 4], borderWidth: 1.5 }
+          { label: '1st', data: p1d, borderColor: '#EF9F27', backgroundColor: 'rgba(250,199,117,0.18)', fill: true, tension: 0.35, pointRadius: ptRadius, pointBackgroundColor: ptBg, borderWidth: 2 },
+          { label: '2nd', data: p2d, borderColor: '#B4B2A9', fill: false, tension: 0.35, pointRadius: 3, borderDash: [5, 3], borderWidth: 1.5 },
+          { label: '3rd', data: p3d, borderColor: '#F0997B', fill: false, tension: 0.35, pointRadius: 3, borderDash: [2, 4], borderWidth: 1.5 }
         ]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: function (c) { return ' ' + c.dataset.label + ': $' + c.parsed.y.toLocaleString(); } } }
-        },
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return ' ' + c.dataset.label + ': $' + c.parsed.y.toLocaleString(); } } } },
         scales: {
           x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#888780', maxRotation: 30 } },
-          y: { grid: { color: 'rgba(136,135,128,0.15)' }, beginAtZero: true,
-               ticks: { font: { size: 11 }, color: '#888780', callback: function (v) { return '$' + v.toLocaleString(); } } }
+          y: { grid: { color: 'rgba(136,135,128,0.15)' }, beginAtZero: true, ticks: { font: { size: 11 }, color: '#888780', callback: function (v) { return '$' + v.toLocaleString(); } } }
         }
       }
     });
   }
 
-  /* --- wire up controls after DOM is ready --- */
   document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('team-slider').addEventListener('input', function () {
       currentN = parseInt(this.value, 10);
       document.getElementById('team-label').textContent = this.value;
-      document.getElementById('team-badge').textContent  = this.value;
+      document.getElementById('team-badge').textContent = this.value;
       render();
     });
-    document.getElementById('div-select').addEventListener('change', function () {
-      render();
-    });
+    document.getElementById('div-select').addEventListener('change', function () { render(); });
     render();
   });
-
 }());
 </script>
 </body>
